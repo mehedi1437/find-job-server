@@ -10,7 +10,7 @@ const corsOptions = {
   origin: [
     "http://localhost:5173",
     "http://localhost:5174",
-    "https://findjob-22996.web.app/",
+    "https://findjob-22996.web.app",
   ],
   credentials: true,
   optionSuccessStatus: 200,
@@ -108,6 +108,15 @@ async function run() {
       }
 
       const result = await bidsCollection.insertOne(bidData);
+      // Update bid count in job collection
+      const updateDoc = {
+        
+          $inc:{bid_count:1}
+        
+      }
+      const jobQuery={_id:new ObjectId(bidData.jobId),}
+      const updateBidCount = await jobsCollection.updateOne(jobQuery,updateDoc);
+      console.log(updateBidCount);
       res.send(result);
     });
     //! Save a JOB Data in DB
